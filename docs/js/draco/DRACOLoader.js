@@ -39,8 +39,8 @@ THREE.DRACOLoader.prototype = {
 
     load: function(url, onLoad, onProgress, onError) {
         var scope = this;
-        var loader = new THREE.FileLoader(scope.manager);
-        loader.setPath(this.path);
+        var loader = new THREE.XHRLoader(scope.manager);
+        //loader.setPath(this.path);
         loader.setResponseType('arraybuffer');
         if (this.crossOrigin !== undefined) {
           loader.crossOrigin = this.crossOrigin;
@@ -162,7 +162,7 @@ THREE.DRACOLoader.prototype = {
           decoder.GetAttributeFloatForAllPoints(
             dracoGeometry, attribute, attributeData);
           geometryBuffer[ attributeName ] = new Float32Array( numValues );
-          TypedBufferAttribute = THREE.Float32BufferAttribute;
+          TypedBufferAttribute = THREE.Float32Attribute;
           break;
 
         case Int8Array:
@@ -170,7 +170,7 @@ THREE.DRACOLoader.prototype = {
           decoder.GetAttributeInt8ForAllPoints(
             dracoGeometry, attribute, attributeData );
           geometryBuffer[ attributeName ] = new Int8Array( numValues );
-          TypedBufferAttribute = THREE.Int8BufferAttribute;
+          TypedBufferAttribute = THREE.Int8Attribute;
           break;
 
         case Int16Array:
@@ -178,7 +178,7 @@ THREE.DRACOLoader.prototype = {
           decoder.GetAttributeInt16ForAllPoints(
             dracoGeometry, attribute, attributeData);
           geometryBuffer[ attributeName ] = new Int16Array( numValues );
-          TypedBufferAttribute = THREE.Int16BufferAttribute;
+          TypedBufferAttribute = THREE.Int16Attribute;
           break;
 
         case Int32Array:
@@ -186,7 +186,7 @@ THREE.DRACOLoader.prototype = {
           decoder.GetAttributeInt32ForAllPoints(
             dracoGeometry, attribute, attributeData);
           geometryBuffer[ attributeName ] = new Int32Array( numValues );
-          TypedBufferAttribute = THREE.Int32BufferAttribute;
+          TypedBufferAttribute = THREE.Int32Attribute;
           break;
 
         case Uint8Array:
@@ -194,7 +194,7 @@ THREE.DRACOLoader.prototype = {
           decoder.GetAttributeUInt8ForAllPoints(
             dracoGeometry, attribute, attributeData);
           geometryBuffer[ attributeName ] = new Uint8Array( numValues );
-          TypedBufferAttribute = THREE.Uint8BufferAttribute;
+          TypedBufferAttribute = THREE.Uint8Attribute;
           break;
 
         case Uint16Array:
@@ -202,7 +202,7 @@ THREE.DRACOLoader.prototype = {
           decoder.GetAttributeUInt16ForAllPoints(
             dracoGeometry, attribute, attributeData);
           geometryBuffer[ attributeName ] = new Uint16Array( numValues );
-          TypedBufferAttribute = THREE.Uint16BufferAttribute;
+          TypedBufferAttribute = THREE.Uint16Attribute;
           break;
 
         case Uint32Array:
@@ -210,7 +210,7 @@ THREE.DRACOLoader.prototype = {
           decoder.GetAttributeUInt32ForAllPoints(
             dracoGeometry, attribute, attributeData);
           geometryBuffer[ attributeName ] = new Uint32Array( numValues );
-          TypedBufferAttribute = THREE.Uint32BufferAttribute;
+          TypedBufferAttribute = THREE.Uint32Attribute;
           break;
 
         default:
@@ -507,7 +507,7 @@ THREE.DRACOLoader._loadScript = function ( src ) {
  * @return {Promise}
  */
 THREE.DRACOLoader._loadArrayBuffer = function ( src ) {
-  var loader = new THREE.FileLoader();
+  var loader = new THREE.XHRLoader();
   loader.setResponseType( 'arraybuffer' );
   return new Promise( function( resolve, reject ) {
     loader.load( src, resolve, undefined, reject );
