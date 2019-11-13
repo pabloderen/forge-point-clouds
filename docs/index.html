@@ -5,44 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/mdl.min.css">
-    <script src="css/mdl.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.css">
-    <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.js"></script>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://wallabyway.github.io/floor-animation/skeleton.min.css">
     <title>Autodesk Forge: Point Cloud Draco + Revit Demo</title>
-    <style>
-        html, body { margin: 0; padding: 0; }
-        #views {position:fixed; z-index: 2; top:15px; left:15px; background-color: white}
-    </style>
-
-<script type="x-shader/x-vertex" id="vertexshader">
-            uniform float size;
-            void main() {
-                vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-                gl_PointSize = size * ( 100.0 / -mvPosition.z );
-                gl_Position = projectionMatrix * mvPosition;
-            }
-        </script>
-
-        <script type="x-shader/x-fragment" id="fragmentshader">
-            uniform sampler2D texture;
-            void main() {
-                gl_FragColor = texture2D( texture, gl_PointCoord );
-                if (gl_FragColor.w < 0.5) discard;
-            }
-        </script>
-
 </head>
 
-<body>
-    <div id="forgeViewer"></div>
-    <div id="views"><a onclick="setHomeView()">HOME</a> / <a onclick="setWalkView()">WALK</a> </div>
-    <script src="js/draco/DRACOLoader.js"></script>
-    <script src="js/extensions/pointcloud.js"></script>
-    <script src="js/viewer.js"></script>
-    <script src="https://xf79h9aa3l.execute-api.us-west-2.amazonaws.com/toolkit2/api/_adsk.js"></script>
-
+<body style="margin:0; overflow-y: hidden;">
+ <div class="container">
+    <nav class="navbar">
+      <div class="container">
+        <ul class="navbar-list">
+          <li class="navbar-item"><img class="navbar-button navbar-img" src="https://wallabyway.github.io/offline-pdf-markup/logo.png"/></li>
+          <li class="navbar-item"><button onClick="setHomeView()" class="navbar-button button-primary">Drone View</button></li>
+          <li class="navbar-item"><button onClick="setWalkView()" class="navbar-button button-primary">Walk</button></li>
+          <li class="navbar-itemr mobile"><a class="navbar-button button" href="https://github.com/wallabyway/forge-point-clouds">Github</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div id="forgeViewer"></div>
 </body>
 
+<link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.css">
+<script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.js"></script>
+<script src="js/viewer.js"></script>
+<script src="js/draco/DRACOLoader.js"></script>
+<script src="js/extensions/pointcloud.js"></script>
+<script src="https://xf79h9aa3l.execute-api.us-west-2.amazonaws.com/toolkit2/api/_adsk.js"></script>
 </html>

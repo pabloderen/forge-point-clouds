@@ -1,36 +1,14 @@
-
-
 class PointCloudExtension extends Autodesk.Viewing.Extension {
+
     load() {
-
-                const PointSize = 10.0;
-                var tex = THREE.ImageUtils.loadTexture("css/disc.png");
-                var material = new THREE.ShaderMaterial( {
-                    uniforms: {
-                        size: { type: "f", value: PointSize },
-                        texture: { type: "t", value: tex }
-                    },
-                    vertexShader: document.getElementById( 'vertexshader' ).textContent,
-                    fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
-                    alphaTest: 0.9
-                } );
-
-
-        // Configure decoder and create loader.
+        // Configure decoder and create loader
         THREE.DRACOLoader.setDecoderPath( 'js/draco/' );
         THREE.DRACOLoader.setDecoderConfig( { type: 'wasm' } );
         var dracoLoader = new THREE.DRACOLoader();
-        THREE.DRACOLoader.getDecoderModule().then(module=>{
-          THREE.DRACOmodule = module;
-        });
 
         dracoLoader.load( 'data/airsquire.drc', geometry => {
             geometry.isPoints = true; // This flag will force Forge Viewer to render the geometry as gl.POINTS
-            this.points = new THREE.PointCloud(geometry, material);
-
-            const feettoMeters = 3.28084 * 2;
-            this.points.scale.multiplyScalar(feettoMeters);
-            this.points.position.set(-100.0, -160.0, -30);
+            this.points = new THREE.PointCloud(geometry, this.getMaterial());
             this.viewer.impl.createOverlayScene('pointclouds');
             this.viewer.impl.addOverlay('pointclouds', this.points);
 
@@ -38,21 +16,50 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
             THREE.DRACOLoader.releaseDecoderModule();
 
             viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
-                const offset = viewer.model.getData().globalOffset;
-                //this.points.position.set(-offset.x, -offset.y, -offset.z);
-                viewer.impl.invalidate(false,false,true);
+                this.alignAndScaleModel();
+                setHomeView();
             });
-
-            addEventListener('mousemove', e=>{
-                //this.points.position.set(-200.0+(e.canvasX/5.0) , -260.0-(e.canvasY/5.0) , -30);
-                //viewer.impl.invalidate(false,false, true);
-            })
         });
         return true;
     }
 
     unload() {
         return true;
+    }
+
+    getMaterial() {
+        const PointSize = 350.0 * viewer.impl.glrenderer().getPixelRatio();
+        var tex = THREE.ImageUtils.loadTexture("css/disc.png");
+
+        return new THREE.ShaderMaterial( {
+            uniforms: {
+                size: { type: "f", value: PointSize },
+                texture: { type: "t", value: tex }
+            },
+            vertexShader: `
+                    uniform float size;
+                    void main() {
+                        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+                        gl_PointSize = 1.2 + size / length(mvPosition.xyz) ;
+                        gl_Position = projectionMatrix * mvPosition;
+                    }
+            `,
+            fragmentShader: `
+                    uniform sampler2D texture;
+                    void main() {
+                        gl_FragColor = texture2D( texture, gl_PointCoord );
+                        if (gl_FragColor.w < 0.45) discard;
+                    }                    
+            `,
+        } );
+    }
+
+    alignAndScaleModel() {
+        const feettoMeters = 3.28084 * 2;
+        this.points.scale.multiplyScalar(feettoMeters);
+        this.points.position.set(-100.0, -160.0, -30);
+        //const offset = viewer.model.getData().globalOffset;
+        //this.points.position.set(-offset.x, -offset.y, -offset.z);
     }
 }
 
