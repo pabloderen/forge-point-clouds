@@ -44,7 +44,7 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
             uniforms: {
                 size: { type: "f", value: PointSize },
                 texture: { type: "t", value: tex },
-                clipx: { type: "f", value: 20.5 },
+                clipx: { type: "f", value: -20.5 },
             },
             vertexShader: `
                     uniform float size;
