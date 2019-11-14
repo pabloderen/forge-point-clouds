@@ -12,7 +12,7 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
             console.log(geometry)
             const positions = geometry.attributes['position'].array
             const idColorList = []
-            for (var i=0; i< positions.length; i++){
+            for (var i=0; i< positions.length; i+=3){
                 const color = new THREE.Color()
                 color.setHex(i)
                 idColorList.push(color.r)
