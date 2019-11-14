@@ -1,6 +1,7 @@
 class PointCloudExtension extends Autodesk.Viewing.Extension {
 
     load() {
+        console.log("PointCloudExtension loaded")
         // Configure decoder and create loader
         THREE.DRACOLoader.setDecoderPath( 'js/draco/' );
         THREE.DRACOLoader.setDecoderConfig( { type: 'wasm' } );
@@ -8,6 +9,20 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
 
         dracoLoader.load( 'data/airsquire.drc', geometry => {
             geometry.isPoints = true; // This flag will force Forge Viewer to render the geometry as gl.POINTS
+            console.log(geometry)
+            const positions = geometry.attributes['position'].array
+            const idColorList = []
+            for (var i=0; i< positions.length; i++){
+                const color = new THREE.Color()
+                color.setHex(i)
+                idColorList.push(color.r)
+                idColorList.push(color.g)
+                idColorList.push(color.b)
+            }
+            const idColor = new Float32Array(idColorList)
+
+            geometry.addAttribute('idcolor', new THREE.BufferAttribute(idColor, 3))
+            geometry.attributes['idcolor'].needsUpdate = true
             this.points = new THREE.PointCloud(geometry, this.getMaterial());
             this.viewer.impl.createOverlayScene('pointclouds');
             this.viewer.impl.addOverlay('pointclouds', this.points);

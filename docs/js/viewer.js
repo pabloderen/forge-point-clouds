@@ -11,9 +11,9 @@ function loadModel(urn) {
         accessToken: _adsk.token.access_token,
         applyRefPoint: true,
         isAEC: true,
-        extensions:["PointCloudExtension"]
+        extensions:["PointCloudExtension", "GPUPickerExtension"]
     };
-    const config = { extensions:["PointCloudExtension"] };
+    const config = { extensions:["PointCloudExtension", "GPUPickerExtension"] };
 
     Autodesk.Viewing.Initializer(options, () => {
         viewer = new Autodesk.Viewing.Private.GuiViewer3D(div, config);
