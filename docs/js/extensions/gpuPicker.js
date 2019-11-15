@@ -160,7 +160,7 @@ class GPUPickerExtension extends Autodesk.Viewing.Extension {
       const position = new THREE.Vector3(positionX, positionY, positionZ)
       this.panel.add("Point from point cloud selected:")
       this.panel.add(`Selected point in model X: ${position.x.toFixed(4)} Y: ${position.y.toFixed(4)} Z: ${position.z.toFixed(4)}`)
-      this.panel.add(`Distance betwen this point to model point is ${position.distanceTo(this.pickPointInModel.toFixed(4))}`)
+      this.panel.add(`Distance betwen this point to model point is ${position.distanceTo(this.pickPointInModel).toFixed(4)}`)
       this.panel.add("Selecting from point cloud...")
     } else {
       const snapResult = this.snapper.getSnapResult()
