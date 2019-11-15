@@ -4,7 +4,6 @@ window.addEventListener('DOMContentLoaded', ()=>loadModel("dXJuOmFkc2sub2JqZWN0c
 
 
 function loadModel(urn) {
-    const div = document.getElementById('forgeViewer');
 
     const options = {
         env: 'AutodeskProduction',
@@ -16,6 +15,10 @@ function loadModel(urn) {
     const config = { extensions:["PointCloudExtension", "GPUPickerExtension"] };
 
     Autodesk.Viewing.Initializer(options, () => {
+
+        const div = document.getElementById('forgeViewer');
+        const config = { extensions:["PointCloudExtension"] };
+
         viewer = new Autodesk.Viewing.Private.GuiViewer3D(div, config);
         viewer.start();
         Autodesk.Viewing.Document.load(`urn:${urn}`, (doc) => {
