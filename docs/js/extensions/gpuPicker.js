@@ -1,3 +1,4 @@
+
 class GPUPickerExtension extends Autodesk.Viewing.Extension {
   load() {
     console.log("GPUPickerExtension loaded")
@@ -48,9 +49,17 @@ class GPUPickerExtension extends Autodesk.Viewing.Extension {
       : new Autodesk.Viewing.UI.ControlGroup("AirsquireCustomTools")
     this.subToolbar.addControl(this.toolbarBtn)
     this.viewer.toolbar.addControl(this.subToolbar)
+
+    this.panel = new GPUPickerPanel(
+      this.viewer.container,
+      "gpu-picker-panel",
+      "GPU Picker Panel"
+    )
   }
 
   activateGPUPicker = () => {
+    this.panel.setVisible(true)
+    this.panel.add("Selecting from model...")
     this.snapper = new Autodesk.Viewing.Extensions.Snapping.Snapper(this.viewer)
     this.snapper.activate()
     this.pointCloudExtension = this.viewer.getLoadedExtensions().PointCloudExtension
@@ -91,7 +100,6 @@ class GPUPickerExtension extends Autodesk.Viewing.Extension {
       const pixelRatio = renderer.getPixelRatio()
       const pickWndSize = Math.floor(pixelRatio)
       const material = this.pointCloudExtension.points.material
-      const windowSize = 16
       if (this.renderTarget) {
         this.renderTarget.dispose()
       }
@@ -126,8 +134,6 @@ class GPUPickerExtension extends Autodesk.Viewing.Extension {
       pixelPosition.y = (pixelPosition.y + 1) * height * 0.5
   
       const pickMaterial = this.createPickMaterial()
-      console.log("Geometry", this.pointCloudExtension.points.geometry)
-      console.log(this.pointCloudExtension.points)
       renderer.renderBufferDirect(
         camera,
         [],
@@ -147,18 +153,21 @@ class GPUPickerExtension extends Autodesk.Viewing.Extension {
         renderer.context.UNSIGNED_BYTE,
         pixelBuffer
       )
-      console.log(pixelBuffer)
       const id = (pixelBuffer[0] << 16) | (pixelBuffer[1] << 8) | (pixelBuffer[2]);
-      console.log(id)
-      const positionX = this.pointCloudExtension.points.geometry.attributes.position[id]
-      const positionY = this.pointCloudExtension.points.geometry.attributes.position[id + 1]
-      const positionZ = this.pointCloudExtension.points.geometry.attributes.position[id + 2]
+      const positionX = this.pointCloudExtension.points.geometry.attributes.position.array[id]
+      const positionY = this.pointCloudExtension.points.geometry.attributes.position.array[id + 1]
+      const positionZ = this.pointCloudExtension.points.geometry.attributes.position.array[id + 2]
       const position = new THREE.Vector3(positionX, positionY, positionZ)
-      console.log(position)
+      this.panel.add("Point from point cloud selected:")
+      this.panel.add(`Selected point in model X: ${position.x.toFixed(4)} Y: ${position.y.toFixed(4)} Z: ${position.z.toFixed(4)}`)
+      this.panel.add(`Distance betwen this point to model point is ${position.distanceTo(this.pickPointInModel.toFixed(4))}`)
+      this.panel.add("Selecting from point cloud...")
     } else {
       const snapResult = this.snapper.getSnapResult()
       this.pickPointInModel = snapResult.getVertex()
-      console.log(this.pickPointInModel)
+      this.panel.add(`Selected point in model X: ${this.pickPointInModel.x.toFixed(4)} Y: ${this.pickPointInModel.y.toFixed(4)} Z: ${this.pickPointInModel.z.toFixed(4)}`)
+      this.panel.add("Model selection done")
+      this.panel.add("Selecting from point cloud...")
       this.startPickingFromPointCloud = true
     }
   }
@@ -191,13 +200,13 @@ class GPUPickerExtension extends Autodesk.Viewing.Extension {
       uniforms: {
       },
       vertexShader: `
-                    attribute vec3 idcolor;
+                    attribute vec3 color;
                     varying vec3 vColor;
                     void main() {
-                        vColor = vec3(idcolor);
+                        vColor = color;
                         vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
                         gl_Position = projectionMatrix * mvPosition;
-                        gl_PointSize = 2.0;
+                        gl_PointSize = 10.0;
                     }
             `,
       fragmentShader: `
@@ -209,5 +218,43 @@ class GPUPickerExtension extends Autodesk.Viewing.Extension {
     });
   }
 }
+
+
+class GPUPickerPanel extends Autodesk.Viewing.UI.DockingPanel {
+  
+  constructor(container, id, title) {
+    super(container, id, title)
+    Autodesk.Viewing.UI.DockingPanel.call(this, container, id, title)
+    this.container.classList.add("docking-panel-container-solid-color-a")
+    this.adjustSize()
+    this.container.style.resize = "auto"
+    this.container.style.fontFamily = "Abel"
+    this.div = document.createElement("div")
+    this.div.style.margin = "20px"
+    this.container.appendChild(this.div)
+  }
+
+  setVisible(show) {
+    super.setVisible(show)
+  }
+
+  adjustSize() {
+    this.container.style.top = "30px"
+    this.container.style.left = "0px"
+    this.container.style.width = "450px"
+    this.container.style.height = "800px"
+    this.container.style.overflow = "scroll"
+  }
+
+  add (text) {
+    const newDiv = document.createElement("div")
+    newDiv.style= `
+      font-size: 16px;
+    `
+    newDiv.innerText = text
+    this.div.appendChild(newDiv)
+  }
+}
+
 
 Autodesk.Viewing.theExtensionManager.registerExtension('GPUPickerExtension', GPUPickerExtension);

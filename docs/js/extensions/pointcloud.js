@@ -20,9 +20,7 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
                 idColorList.push(color.b)
             }
             const idColor = new Float32Array(idColorList)
-
-            geometry.addAttribute('idcolor', new THREE.BufferAttribute(idColor, 3))
-            geometry.attributes['idcolor'].needsUpdate = true
+            geometry.addAttribute('color', new THREE.BufferAttribute(idColor, 3, true))
             this.points = new THREE.PointCloud(geometry, this.getMaterial());
             this.viewer.impl.createOverlayScene('pointclouds');
             this.viewer.impl.addOverlay('pointclouds', this.points);
