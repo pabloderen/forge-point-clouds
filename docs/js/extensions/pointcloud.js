@@ -3,6 +3,7 @@ const feettoMeters = 3.28084 * 2;
 class PointCloudExtension extends Autodesk.Viewing.Extension {
 
     load() {
+        console.log("PointCloudExtension loaded")
         // Configure decoder and create loader
         THREE.DRACOLoader.setDecoderPath( 'js/draco/' );
         THREE.DRACOLoader.setDecoderConfig( { type: 'wasm' } );
@@ -10,6 +11,17 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
 
         dracoLoader.load( 'data/airsquire.drc', geometry => {
             geometry.isPoints = true; // This flag will force Forge Viewer to render the geometry as gl.POINTS
+            const positions = geometry.attributes['position'].array
+            const idColorList = []
+            for (let i=0; i< positions.length; i+=3){
+                const color = new THREE.Color()
+                color.setHex(i)
+                idColorList.push(color.r)
+                idColorList.push(color.g)
+                idColorList.push(color.b)
+            }
+            const idColor = new Float32Array(idColorList)
+            geometry.addAttribute('color', new THREE.BufferAttribute(idColor, 3, true))
             this.material = this.getMaterial();
             this.points = new THREE.PointCloud(geometry, this.material);
             this.viewer.impl.createOverlayScene('pointclouds');

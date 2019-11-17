@@ -9,13 +9,14 @@ function loadModel(urn) {
         env: 'AutodeskProduction',
         accessToken: _adsk.token.access_token,
         applyRefPoint: true,
-        isAEC: true
+        isAEC: true,
+        extensions:["PointCloudExtension", "GPUPickerExtension"]
     };
 
     Autodesk.Viewing.Initializer(options, () => {
 
         const div = document.getElementById('forgeViewer');
-        const config = { extensions:["PointCloudExtension"] };
+        const config = { extensions:["PointCloudExtension", "GPUPickerExtension"] };
 
         viewer = new Autodesk.Viewing.Private.GuiViewer3D(div, config);
         viewer.start();
