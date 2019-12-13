@@ -6,7 +6,8 @@
 
 ### Video Recording/PPTx/Notes: https://www.autodesk.com/autodesk-university/class/Viewing-PointCloud-browser-ForgeViewer-and-Airsquire-2019
 
-Streaming example:
+Streaming example with EBL shading:
+
 ![LOD](https://user-images.githubusercontent.com/440241/70822221-e6ed5b80-1d91-11ea-9c51-41d10b653ef3.gif)
 
 - <img src="https://autodeskuniversity.smarteventscloud.com/fileDownload/89FEF0D94715403DC66EA02C0342F7683F60A2A950B4C114455B33B768053035A7C91EF36E74A533393ED1B9AA2C4914/DA388B80EF0610B4D5ECAEF7CE90B823.jpg" width="120px" />
