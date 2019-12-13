@@ -1,6 +1,11 @@
 # forge-point-clouds
 
+# Blog: https://forge.autodesk.com/blog/combining-pointclouds-and-revit-models-forgeviewer
+
 ### AU Talk: FDC324035 - Viewing PointCloud in a browser with ForgeViewer and Airsquire
+
+
+Video Recording/PPTx/Notes: https://www.autodesk.com/autodesk-university/class/Viewing-PointCloud-browser-ForgeViewer-and-Airsquire-2019
 
 
 - DATE: Monday, Nov 18
