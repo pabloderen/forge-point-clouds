@@ -1,17 +1,10 @@
 # forge-point-clouds
 
-# Blog: https://forge.autodesk.com/blog/combining-pointclouds-and-revit-models-forgeviewer
+## Blog: https://forge.autodesk.com/blog/combining-pointclouds-and-revit-models-forgeviewer
 
-### AU Talk: FDC324035 - Viewing PointCloud in a browser with ForgeViewer and Airsquire
+## AU Talk: FDC324035 - Viewing PointCloud in a browser with ForgeViewer and Airsquire
 
-
-Video Recording/PPTx/Notes: https://www.autodesk.com/autodesk-university/class/Viewing-PointCloud-browser-ForgeViewer-and-Airsquire-2019
-
-
-- DATE: Monday, Nov 18
-- TIME: 5:00 PM - 06:00 PM
-- WHERE: Marcello 4403, Level 4 (LAS VEGAS)
-- SIGN UP: https://autodeskuniversity.smarteventscloud.com/connect/sessionDetail.ww?SESSION_ID=324035&tclass=popup
+### Video Recording/PPTx/Notes: https://www.autodesk.com/autodesk-university/class/Viewing-PointCloud-browser-ForgeViewer-and-Airsquire-2019
 
 - <img src="https://autodeskuniversity.smarteventscloud.com/fileDownload/89FEF0D94715403DC66EA02C0342F7683F60A2A950B4C114455B33B768053035A7C91EF36E74A533393ED1B9AA2C4914/DA388B80EF0610B4D5ECAEF7CE90B823.jpg" width="120px" />
 - Yue You (CTO): [AirSquire](https://www.airsquire.ai)
