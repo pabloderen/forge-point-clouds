@@ -1,8 +1,13 @@
 # forge-point-clouds
 
-## Blog: https://forge.autodesk.com/blog/combining-pointclouds-and-revit-models-forgeviewer
+for Potree, go here: https://github.com/wallabyway/forge-pointcloud-with-revit
+
+
+This is about glTF and Draco point cloud...
 
 ## AU Talk: FDC324035 - Viewing PointCloud in a browser with ForgeViewer and Airsquire
+
+## Blog: https://forge.autodesk.com/blog/combining-pointclouds-and-revit-models-forgeviewer
 
 ### Video Recording/PPTx/Notes: https://www.autodesk.com/autodesk-university/class/Viewing-PointCloud-browser-ForgeViewer-and-Airsquire-2019
 
