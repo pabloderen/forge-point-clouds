@@ -24,6 +24,8 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
             geometry.addAttribute('color', new THREE.BufferAttribute(idColor, 3, true))
             this.material = this.getMaterial();
             this.points = new THREE.PointCloud(geometry, this.material);
+            this.points.scale.multiplyScalar(feettoMeters);
+            this.points.position.set(-100.0, -160.0, -30);
             this.viewer.impl.createOverlayScene('pointclouds');
             this.viewer.impl.addOverlay('pointclouds', this.points);
 
@@ -31,13 +33,33 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
             THREE.DRACOLoader.releaseDecoderModule();
 
             viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
-                this.alignAndScaleModel();
-                setHomeView();
+  
+ 
             });
             
             viewer.addEventListener(Autodesk.Viewing.CUTPLANES_CHANGE_EVENT, (e) => {
-                if (!e.planes) return;
-                this.material.uniforms.clipx = { type: "f", value: (15.25+e.planes[0].w/feettoMeters)};
+                if (!e.planes) {
+                    this.material.uniforms.clipx ={ type: "f", value: 35};
+                    this.material.uniforms.clipz = { type: "f", value: 20.5};
+                    this.material.uniforms.clipy ={ type: "f", value: -20.5};
+                    this.material.needsUpdate = true;
+                    return;
+                }
+
+                e.planes.forEach(element => {
+                    if  (element.x != 0){
+                        this.material.uniforms.clipx = { type: "f", value: 10 -(e.planes[0].w/feettoMeters)};
+                        console.log(this.material.uniforms.clipx.value + " "+ e.planes[0].w/feettoMeters);
+                    }
+                    if  (element.y != 0){
+                        this.material.uniforms.clipy = { type: "f", value: (25+e.planes[0].w/feettoMeters)};
+                    }
+                    if  (element.z != 0){
+                        this.material.uniforms.clipz = { type: "f", value:5 - ( e.planes[0].w/feettoMeters)};
+                        
+                    }
+                });
+                
                 this.material.needsUpdate = true;
             });
 
@@ -52,42 +74,55 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
     getMaterial() {
         const PointSize = 350.0 * viewer.impl.glrenderer().getPixelRatio();
         var tex = THREE.ImageUtils.loadTexture("css/disc.png");
-        return new THREE.ShaderMaterial( {
-            uniforms: {
-                size: { type: "f", value: PointSize },
-                texture: { type: "t", value: tex },
-                clipx: { type: "f", value: -20.5 },
+        var uniforms = {
+            color: { type:"c",  value: new THREE.Color(0xffffff) },
+            texture1: { type: "t", value: tex},
+            size: { type:"f",
+                value: PointSize
             },
-            vertexShader: `
-                    uniform float size;
-                    varying vec4 clip_pos;
+            scale: {
+                type:"f",
+                value: window.innerHeight / 2.0
+            },
+            clipx: { type: "f", value: 35 },
+            clipy: { type: "f", value: -20.5 },
+            clipz: { type: "f", value: 20.5 },
+        };
 
-                    void main() {
-                        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-                        gl_PointSize = 1.2 + size / length(mvPosition.xyz) ;
-                        gl_Position = projectionMatrix * mvPosition;
-                        clip_pos = vec4( position, 1.0 );
-                    }
-            `,
-            fragmentShader: `
-                    uniform sampler2D texture;
-                    varying vec4 clip_pos;
-                    uniform float clipx;
-                    void main() {
-                        if ( clip_pos.x < clipx ) discard;
-                        gl_FragColor = texture2D( texture, gl_PointCoord );
-                        if (gl_FragColor.w < 0.45) discard;
-                    }                    
-            `,
+        var vertexShader=  `
+        uniform float size;
+        varying vec4 clip_pos;
+
+        void main() {
+            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+            gl_PointSize = 1.2 + size / length(mvPosition.xyz) ;
+            gl_Position = projectionMatrix * mvPosition;
+            clip_pos = vec4( position, 1.0 );
+        }
+            `;
+            var fragmentShader =  `
+            uniform sampler2D texture1;
+            varying vec4 clip_pos;
+            uniform float clipx;
+            uniform float clipy;
+            uniform float clipz;
+            void main() {
+                if ( clip_pos.x > clipx ) discard;
+                if ( clip_pos.y < clipy ) discard;
+                if ( clip_pos.z > clipz ) discard;
+                gl_FragColor = texture2D(texture1, gl_PointCoord);
+                if (gl_FragColor.w < 0.45) discard;
+            }          
+            
+            `;
+        return new THREE.ShaderMaterial( {
+            uniforms: uniforms,
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
         } );
     }
 
-    alignAndScaleModel() {
-        this.points.scale.multiplyScalar(feettoMeters);
-        this.points.position.set(-100.0, -160.0, -30);
-        //const offset = viewer.model.getData().globalOffset;
-        //this.points.position.set(-offset.x, -offset.y, -offset.z);
-    }
+
 }
 
 Autodesk.Viewing.theExtensionManager.registerExtension('PointCloudExtension', PointCloudExtension);
