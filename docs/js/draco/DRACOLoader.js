@@ -162,7 +162,7 @@ THREE.DRACOLoader.prototype = {
           decoder.GetAttributeFloatForAllPoints(
             dracoGeometry, attribute, attributeData);
           geometryBuffer[ attributeName ] = new Float32Array( numValues );
-          TypedBufferAttribute = THREE.Float32Attribute;
+          TypedBufferAttribute = THREE.BufferAttribute;
           break;
 
         case Int8Array:
