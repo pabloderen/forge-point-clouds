@@ -11,10 +11,12 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
 
         dracoLoader.load( 'data/E57 Exporter by Doxel_small136.drc', geometry => {
             geometry.isPoints = true; // This flag will force Forge Viewer to render the geometry as gl.POINTS
+            geometry.computeBoundingBox();
+
             this.material =new THREE.PointCloudMaterial({vertexColors: true, size:2});
             this.points = new THREE.PointCloud(geometry, this.material);
             this.points.scale.multiplyScalar(feettoMeters);
-            this.points.position.set(-100.0, -160.0, -30);
+            this.points.position.set(100,0,100);
             this.viewer.impl.createOverlayScene('pointclouds');
             this.viewer.impl.addOverlay('pointclouds', this.points);
 
