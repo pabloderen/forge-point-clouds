@@ -9,23 +9,14 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
         THREE.DRACOLoader.setDecoderConfig( { type: 'wasm' } );
         var dracoLoader = new THREE.DRACOLoader();
 
-        dracoLoader.load( 'data/airsquire.drc', geometry => {
+        dracoLoader.load( 'data/E57 Exporter by Doxel_small136.drc', geometry => {
             geometry.isPoints = true; // This flag will force Forge Viewer to render the geometry as gl.POINTS
-            const positions = geometry.attributes['position'].array
-            const idColorList = []
-            for (let i=0; i< positions.length; i+=3){
-                const color = new THREE.Color()
-                color.setHex(i)
-                idColorList.push(color.r)
-                idColorList.push(color.g)
-                idColorList.push(color.b)
-            }
-            const idColor = new Float32Array(idColorList)
-            geometry.addAttribute('color', new THREE.BufferAttribute(idColor, 3, true))
-            this.material = this.getMaterial();
+            geometry.computeBoundingBox();
+
+            this.material =new THREE.PointCloudMaterial({vertexColors: true, size:2});
             this.points = new THREE.PointCloud(geometry, this.material);
             this.points.scale.multiplyScalar(feettoMeters);
-            this.points.position.set(-100.0, -160.0, -30);
+            this.points.position.set(100,0,100);
             this.viewer.impl.createOverlayScene('pointclouds');
             this.viewer.impl.addOverlay('pointclouds', this.points);
 
@@ -38,6 +29,8 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
             });
             
             viewer.addEventListener(Autodesk.Viewing.CUTPLANES_CHANGE_EVENT, (e) => {
+
+                return;
                 if (!e.planes) {
                     this.material.uniforms.clipx ={ type: "f", value: 35};
                     this.material.uniforms.clipz = { type: "f", value: 20.5};
