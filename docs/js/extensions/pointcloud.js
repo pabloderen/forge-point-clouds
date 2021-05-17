@@ -9,9 +9,9 @@ class PointCloudExtension extends Autodesk.Viewing.Extension {
         THREE.DRACOLoader.setDecoderConfig( { type: 'wasm' } );
         var dracoLoader = new THREE.DRACOLoader();
 
-        dracoLoader.load( 'data/airsquire.drc', geometry => {
+        dracoLoader.load( 'data/E57 Exporter by Doxel_small136.drc', geometry => {
             geometry.isPoints = true; // This flag will force Forge Viewer to render the geometry as gl.POINTS
-            this.material =new THREE.PointCloudMaterial({vertexColor: true, size:1});
+            this.material =new THREE.PointCloudMaterial({vertexColors: true, size:2});
             this.points = new THREE.PointCloud(geometry, this.material);
             this.points.scale.multiplyScalar(feettoMeters);
             this.points.position.set(-100.0, -160.0, -30);
